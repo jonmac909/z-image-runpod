@@ -16,13 +16,8 @@ COPY handler.py .
 # Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Pre-download Z-Image model from HuggingFace during build
-# This avoids authentication issues and makes startup instant
-RUN python3 -c "from diffusers import ZImagePipeline; import torch; ZImagePipeline.from_pretrained('Tongyi-MAI/Z-Image-Turbo', torch_dtype=torch.bfloat16)" || \
-    python3 -c "from huggingface_hub import snapshot_download; snapshot_download(repo_id='Tongyi-MAI/Z-Image-Turbo', allow_patterns=['*.safetensors', '*.json', '*.txt', '*.pt', '*.model'])"
-
 # Set Python path
 ENV PYTHONPATH=/app:$PYTHONPATH
 
-# Run the handler
+# Run the handler (model will download on first startup)
 CMD ["python", "-u", "handler.py"]
