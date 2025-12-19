@@ -133,7 +133,7 @@ docker run --gpus all -p 8000:8000 z-image-runpod:latest
 
 ---
 
-**Last Updated**: December 18, 2025  
-**Model**: Z-Image-Turbo (Tongyi-MAI)  
+**Last Updated**: December 18, 2025
+**Model**: Z-Image-Turbo (Tongyi-MAI)
 **Framework**: Diffusers + PyTorch
-# Build trigger Thu Dec 18 17:46:25 PST 2025
+# Build trigger: Runtime model download - Wed Dec 18 18:33:00 PST 2025
