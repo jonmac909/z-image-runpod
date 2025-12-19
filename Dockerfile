@@ -10,14 +10,18 @@ RUN apt-get update && apt-get install -y \
     git \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy project files
+# Copy requirements first (for better layer caching)
 COPY requirements.txt .
-COPY handler.py .
 
-# Install Python dependencies with cleanup
-RUN pip install --no-cache-dir -r requirements.txt \
-    && pip cache purge \
-    && rm -rf /tmp/* /var/tmp/* ~/.cache/*
+# Install Python dependencies
+# Note: torch/torchvision/torchaudio already in base image - do NOT reinstall
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Verify diffusers installed correctly with ZImagePipeline
+RUN python -c "from diffusers import ZImagePipeline; print('ZImagePipeline import OK')"
+
+# Copy handler
+COPY handler.py .
 
 # Set Python path
 ENV PYTHONPATH=/app:$PYTHONPATH

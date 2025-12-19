@@ -1,9 +1,19 @@
+# RunPod handler
 runpod
-torch==2.4.0
-torchvision==0.19.0
-torchaudio==2.4.0
+
+# NOTE: torch, torchvision, torchaudio are already in the base image
+# runpod/pytorch:2.4.0-py3.11-cuda12.4.1-devel-ubuntu22.04
+# DO NOT reinstall them - causes version conflicts
+
+# Diffusers from GitHub (ZImagePipeline not in stable release yet)
 git+https://github.com/huggingface/diffusers
+
+# Required for Z-Image text encoder
 transformers
+sentencepiece
+protobuf
+
+# Other dependencies
 accelerate
 pillow
 huggingface-hub
