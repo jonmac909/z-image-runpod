@@ -1,9 +1,11 @@
 # RunPod handler
 runpod
 
-# NOTE: torch, torchvision, torchaudio are already in the base image
-# runpod/pytorch:2.4.0-py3.11-cuda12.4.1-devel-ubuntu22.04
-# DO NOT reinstall them - causes version conflicts
+# Upgrade PyTorch to 2.5+ (required for diffusers enable_gqa parameter)
+# Base image has 2.4.0 but diffusers needs 2.5+
+torch>=2.5.0
+torchvision>=0.20.0
+torchaudio>=2.5.0
 
 # Diffusers from GitHub (ZImagePipeline not in stable release yet)
 git+https://github.com/huggingface/diffusers
