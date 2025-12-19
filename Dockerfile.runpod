@@ -13,11 +13,23 @@ RUN apt-get update && apt-get install -y \
 COPY requirements.txt .
 COPY handler.py .
 
-# Install Python dependencies
-RUN pip install --no-cache-dir -r requirements.txt
+# Install Python dependencies with aggressive cleanup
+RUN pip install --no-cache-dir -r requirements.txt \
+    && pip cache purge \
+    && rm -rf /tmp/* /var/tmp/* ~/.cache/*
+
+# Pre-download the Z-Image model to cache it in the Docker image
+# This prevents workers from downloading the model on every startup
+RUN python3 -c "\
+import torch; \
+from diffusers import ZImagePipeline; \
+print('Pre-downloading Z-Image-Turbo model...'); \
+pipe = ZImagePipeline.from_pretrained('Tongyi-MAI/Z-Image-Turbo', torch_dtype=torch.bfloat16); \
+print('Model cached successfully')" \
+    && rm -rf /tmp/* /var/tmp/*
 
 # Set Python path
 ENV PYTHONPATH=/app:$PYTHONPATH
 
-# Run the handler (model will download on first startup)
+# Run the handler (model is already cached in the image)
 CMD ["python", "-u", "handler.py"]
