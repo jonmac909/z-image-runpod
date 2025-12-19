@@ -44,12 +44,12 @@ def parse_aspect_ratio(aspect_ratio: str) -> tuple:
         aspect_ratio: Aspect ratio string (e.g., "16:9", "1:1", "9:16")
 
     Returns:
-        Tuple of (width, height) in pixels
+        Tuple of (width, height) in pixels (both divisible by 16)
     """
     ratios = {
-        "16:9": (1536, 864),   # Landscape (1536 max width)
+        "16:9": (1792, 1008),  # Landscape HD (closest to 1080p with exact 16:9 ratio, divisible by 16)
         "1:1": (1024, 1024),   # Square (native training res)
-        "9:16": (864, 1536),   # Portrait (1536 max height)
+        "9:16": (1008, 1792),  # Portrait HD (vertical)
     }
     return ratios.get(aspect_ratio, (1024, 1024))  # Default to square
 
@@ -108,6 +108,11 @@ def handler(job):
         # Parse aspect ratio to dimensions (or use custom override)
         if custom_width and custom_height:
             width, height = int(custom_width), int(custom_height)
+            # Validate dimensions are divisible by 16 (required by the model)
+            if width % 16 != 0:
+                return {"error": f"Width must be divisible by 16 (got {width}). Please adjust the width to a multiple of 16."}
+            if height % 16 != 0:
+                return {"error": f"Height must be divisible by 16 (got {height}). Please adjust the height to a multiple of 16."}
             logger.info(f"Using custom dimensions: {width}x{height}")
         else:
             width, height = parse_aspect_ratio(aspect_ratio)
