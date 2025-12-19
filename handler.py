@@ -47,9 +47,9 @@ def parse_aspect_ratio(aspect_ratio: str) -> tuple:
         Tuple of (width, height) in pixels
     """
     ratios = {
-        "16:9": (1920, 1080),  # Landscape Full HD
-        "1:1": (1536, 1536),   # Square high-res
-        "9:16": (1080, 1920),  # Portrait Full HD
+        "16:9": (1536, 864),   # Landscape (1536 max width)
+        "1:1": (1024, 1024),   # Square (native training res)
+        "9:16": (864, 1536),   # Portrait (1536 max height)
     }
     return ratios.get(aspect_ratio, (1024, 1024))  # Default to square
 
