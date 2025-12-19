@@ -83,6 +83,9 @@ def handler(job):
         prompt = job_input.get("prompt", "").strip()
         quality = job_input.get("quality", "basic")
         aspect_ratio = job_input.get("aspectRatio", "16:9")
+        # Allow custom width/height override for testing
+        custom_width = job_input.get("width")
+        custom_height = job_input.get("height")
 
         # Validate prompt
         if not prompt:
@@ -102,9 +105,13 @@ def handler(job):
         num_steps = 9 if quality == "basic" else 16
         logger.info(f"Using {num_steps} inference steps")
 
-        # Parse aspect ratio to dimensions
-        width, height = parse_aspect_ratio(aspect_ratio)
-        logger.info(f"Image dimensions: {width}x{height}")
+        # Parse aspect ratio to dimensions (or use custom override)
+        if custom_width and custom_height:
+            width, height = int(custom_width), int(custom_height)
+            logger.info(f"Using custom dimensions: {width}x{height}")
+        else:
+            width, height = parse_aspect_ratio(aspect_ratio)
+            logger.info(f"Image dimensions: {width}x{height}")
 
         # Generate image
         try:
